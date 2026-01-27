@@ -1,0 +1,21 @@
+/api/airquality
+{
+"city":{
+    "location"{
+      "AQI":
+      "懸浮粒子":
+      "狀態":
+      "PM2.5":
+      "pm2.5_avg":
+      "PM10":
+      "pm10_avg":
+      "O3":
+      "o3_8hr":
+      "CO":
+      "co_8hr"
+      "SO2":
+      "NO2":
+      "time":
+    }
+  }
+}
