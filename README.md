@@ -2,7 +2,7 @@
 {
 "city":"台北市"
 "location":"大同"
-    airquality{
+    "airquality":{
       "AQI":48
       "status":"良好"
       "pm2.5":7
