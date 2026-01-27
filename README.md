@@ -1,0 +1,20 @@
+/api/airquality
+{
+"city":"台北市"
+"location":"大同"
+    "airquality":{
+      "AQI":48
+      "status":"良好"
+      "pm2.5":7
+      "pm2.5_avg":7.5
+      "pm10":0
+      "pm10_avg":6
+      "o3":25
+      "o3_8hr":15
+      "co":0.5
+      "co_8hr":0.8
+      "so2":0.7
+      "no2":20
+      "time":'2026/01/28 00:00:00'
+    }
+}
