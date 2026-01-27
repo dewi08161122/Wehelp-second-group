@@ -4,7 +4,6 @@
 "location":"大同"
     airquality{
       "AQI":48
-      "懸浮粒子":
       "status":"良好"
       "pm2.5":7
       "pm2.5_avg":7.5
