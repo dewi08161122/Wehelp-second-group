@@ -10,8 +10,8 @@ app.include_router(airquality_router)
 @app.get("/", include_in_schema=False)
 async def index(request: Request):
 	return FileResponse("./static/index.html", media_type="text/html")
-@app.get("/city/{city}", include_in_schema=False)
-async def city(request: Request, city: str):
+@app.get("/city", include_in_schema=False)
+async def city(request: Request):
 	return FileResponse("./static/city.html", media_type="text/html")
 
 app.mount("/css", StaticFiles(directory="public/css"), name="css")

@@ -36,9 +36,9 @@ def get_AQI_by_gov(county:str = None):
                         "co":i["co"],
                         "co_8hr":i["co_8hr"],
                         "so2":i["so2"],
-                        "no2":i["no2"],
-                        "time":i["publishtime"]
-                    }
+                        "no2":i["no2"]
+                    },
+                "time":i["publishtime"]
             }
             cleandata.append(newdata)
         return cleandata
