@@ -1,0 +1,186 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box
+}
+body{
+    font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    background-color:#f7f7f7;
+    color: #333;
+}
+.container{
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color:#fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+/*header / nav*/
+nav{
+    padding: 2rem 0rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top:0;
+    z-index: 1000;
+}
+
+.nav_box{
+    display:flex;
+    justify-content:space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin:0 auto;
+}
+.logo{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.logo:hover{
+    transform: scale(1.05);
+}
+.logo_pic{
+    width:56px;
+    height:56px;
+    border-radius: 12px;
+    padding:0.5rem;
+}
+.logo_pic img{
+    width:100%;
+    height:100%;
+    object-fit: contain;
+}
+.link{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap:1rem;
+}
+.link a{
+    text-decoration: none;
+    color: #333;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+.link a:hover{
+    transform: scale(1.05);
+}
+/* main content */
+main{
+    padding:2rem 0;
+    flex:1;
+}
+.air_quality_info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.air_quality_detail{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.check_spots, .pollution_index, .real_time_update{
+    border:1px solid blue;
+    margin-right:1rem;
+}
+
+.AQI_info{
+    margin-top:2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.AQI_levels{
+    border:1px solid green;
+    padding:1rem 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+}
+
+/*縣市的測站資料*/
+.air_quality_main_data{
+    margin-top:2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/*footer*/
+footer{
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding:3rem 2rem 2rem;
+    background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+    color:#fff
+}
+.source{
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+}
+.copyright{
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    max-width: 800px;
+    margin: 0 auto;
+    letter-spacing: 0.5px;
+}
+/*RWD*/
+@media (max-width: 768px) {
+    nav{
+        padding: 1rem 1.5rem;
+    }
+
+    .nav_box{
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .logo{
+        width: 100%;
+        justify-content: center;
+    }
+
+    .link{
+        width: 100%;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    main{
+        padding: 2rem 1rem;
+    }
+
+    footer{
+        padding: 2rem 1rem;
+    }
+}
+@media (max-width: 480px){
+    .link{
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .link a{
+        font-size: 0.9rem;
+    }
+}
