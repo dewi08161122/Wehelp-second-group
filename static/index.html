@@ -4,11 +4,87 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>空氣品質</title>
-	<!-- 首頁 -->
+	<title>Air Taiwan 台灣空氣品質監測網</title>
+	<link rel="stylesheet" href="/static/css/index.css">
+	<script src="/static/js/index.js"></script>
 </head>
 <body>
-	<!-- 整體空氣品質 -->
+
+	<!--nav bar area-->
+	 <nav>
+<div class="nav_box">
+	<div class="logo">
+		<div class="logo_pic">
+			<img src="/static/pic/logo.png" alt="air taiwan logo">
+		</div>
+		<div class="website_info">
+			<div class="website_name">AIR TAIWAN</div>
+			<div class="website_description">Real-time Monitor</div>
+		</div>
+	</div>
+	<div class="link">
+		<div><a href="#">首頁</a></div>
+		<div><a href="https://www.moenv.gov.tw/">環境部</a></div>
+	</div>
+</div>
+	 </nav>
+
+
+	 <!--main content-->
+	 <main>
+<div class="air_quality_info">
+	<div class="air_quality_title"></div>
+	<div class="air_quality_sub_title"></div>
+	<div class="air_quality_detail">
+		<div class="check_spots"></div>
+		<div class="pollution_index"></div>
+		<div class="real_time_update"></div>
+	</div>
+
+
+
+
+</div>
+<div class="AQI_info">
+	<div class="AQI_info_title">空氣品質指標 (AQI) 說明</div>
+	<div class="AQI_levels">
+		<div class="AQI_level good">
+			<div>0-50</div>
+			<div>良好</div>
+		</div>
+		<div class="AQI_level soso">
+			<div>51-100</div>
+			<div>普通</div>
+		</div>
+		<div class="AQI_level notgood">
+			<div>101-150</div>
+			<div>對敏感族群不健康</div>
+		</div>
+		<div class="AQI_level bad">
+			<div>151-200</div>
+			<div>對所有族群不健康</div>
+		</div>
+		<div class="AQI_level verybad">
+			<div>201-300</div>
+			<div>非常不健康</div>
+		</div>
+		<div class="AQI_level damage">
+			<div>301+</div>
+			<div>危害</div>
+		</div>
+	</div>
+</div>
+<div class="air_quality_main_data">
+	<!--放所有縣市的測站資料-->
+</div>
+	 </main>
+
+	 <!--footer area-->
+	 <footer>
+		<div class="source">資料來源：環境部空氣品質監測網</div>
+		<div class="copyright">© AIR TAIWAN 2026</div>
+
+	 </footer>
 
 </body>
 </html>
