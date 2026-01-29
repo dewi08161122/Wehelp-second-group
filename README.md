@@ -1,4 +1,4 @@
-# AIR TAIWAN
+# [AIR TAIWAN](http://13.55.123.9:8080)
 ## 畫面展示
 ### 首頁
   - **空氣品質指標(AQI)**
@@ -57,8 +57,10 @@
 }
 ```
 ## reference:
-
+[空氣品質資訊網](https://tnepb-air.easylife.net.tw/)
+[Dnibbble](https://dribbble.com/shots/22418681-BreatheairMind-Air-Quality-Monitor-Mac-OS-Widgets)
 **引用API**
 [環境部環境資料開放平台開放資料API](https://data.moenv.gov.tw/swagger/#/)
+
 **規格書參考**
 [API 使用說明](https://data.moenv.gov.tw/paradigm)
