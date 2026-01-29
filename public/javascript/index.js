@@ -6,13 +6,32 @@ const counties = [
     '臺東縣', '澎湖縣', '金門縣', '連江縣'
 ];
 
+// 安全取值函數
+function safeGet(obj, path, defaultValue = 'N/A') {
+    try {
+        const keys = path.split('.');
+        let result = obj;
+        for (const key of keys) {
+            if (result && typeof result === 'object' && key in result) {
+                result = result[key];
+            } else {
+                return defaultValue;
+            }
+        }
+        return result !== null && result !== undefined && result !== '' ? result : defaultValue;
+    } catch (error) {
+        return defaultValue;
+    }
+}
+
 // AQI 狀態判斷函數
 function getAQIStatus(aqi) {
-    if (aqi <= 50) return { status: '良好', class: 'good' };
-    if (aqi <= 100) return { status: '普通', class: 'moderate' };
-    if (aqi <= 150) return { status: '對敏感族群不健康', class: 'sensitive' };
-    if (aqi <= 200) return { status: '對所有族群不健康', class: 'unhealthy' };
-    if (aqi <= 300) return { status: '非常不健康', class: 'very-unhealthy' };
+    const numAqi = parseInt(aqi) || 0;
+    if (numAqi <= 50) return { status: '良好', class: 'good' };
+    if (numAqi <= 100) return { status: '普通', class: 'moderate' };
+    if (numAqi <= 150) return { status: '對敏感族群不健康', class: 'sensitive' };
+    if (numAqi <= 200) return { status: '對所有族群不健康', class: 'unhealthy' };
+    if (numAqi <= 300) return { status: '非常不健康', class: 'very-unhealthy' };
     return { status: '危害', class: 'hazardous' };
 }
 
@@ -20,158 +39,208 @@ function getAQIStatus(aqi) {
 async function fetchCountyAirQuality(county) {
     try {
         const response = await fetch(`/api/airquality?county=${encodeURIComponent(county)}`);
-        const data = await response.json();
         
-        if (data.error) {
-            console.error(`無法取得 ${county} 的資料:`, data.message);
+        if (!response.ok) {
+            console.error(`${county} - HTTP 錯誤: ${response.status}`);
             return null;
         }
         
-        // 取第一個測站資料
-        if (data && data.length > 0) {
-            return {
-                county: county,
-                station: data[0]
-            };
+        const data = await response.json();
+        
+        if (data.error) {
+            console.error(`${county} - API 錯誤:`, data.message);
+            return null;
         }
-        return null;
+        
+        if (!Array.isArray(data) || data.length === 0) {
+            console.warn(`${county} - 沒有資料`);
+            return null;
+        }
+        
+        return {
+            county: county,
+            station: data[0]
+        };
+        
     } catch (error) {
-        console.error(`取得 ${county} 資料時發生錯誤:`, error);
+        console.error(`${county} - 發生錯誤:`, error);
         return null;
     }
 }
 
 // 創建縣市卡片 HTML
 function createCountyCard(countyData) {
-    if (!countyData || !countyData.station) return '';
-    
-    const station = countyData.station;
-    const aqi = station.airquality?.AQI || 0;
-    const aqiInfo = getAQIStatus(aqi);
-    const siteName = station.location || '未知測站';
-    
-    return `
-        <div class="county-card ${aqiInfo.class}" onclick="goToCityPage('${countyData.county}')">
-            <div class="county-header">
-                <div class="county-badge">一般站</div>
-                <h3 class="county-name">${countyData.county}</h3>
-                <p class="station-name">${siteName}</p>
-            </div>
-            
-            <div class="aqi-display">
-                <div class="aqi-value">${aqi}</div>
-                <div class="aqi-status">${aqiInfo.status}</div>
-            </div>
-            
-            <div class="pollutant-grid">
-                <div class="pollutant-item">
-                    <div class="pollutant-label">PM2.5</div>
-                    <div class="pollutant-value">${station.airquality?.['pm2.5'] ?? 'N/A'}</div>
-                    <div class="pollutant-unit">μg/m³</div>
+    try {
+        if (!countyData || !countyData.station) return '';
+        
+        const station = countyData.station;
+        const city = safeGet(station, 'city', countyData.county);
+        const location = safeGet(station, 'location', '未知測站');
+        const aqi = safeGet(station, 'airquality.AQI', '0');
+        const status = safeGet(station, 'airquality.status', '未知');
+        const pm25 = safeGet(station, 'airquality.pm2.5');
+        const pm10 = safeGet(station, 'airquality.pm10');
+        const o3 = safeGet(station, 'airquality.o3');
+        const co = safeGet(station, 'airquality.co');
+        const time = safeGet(station, 'time', '未知時間');
+        
+        const aqiInfo = getAQIStatus(aqi);
+        
+        return `
+            <div class="county-card ${aqiInfo.class}" onclick="goToCityPage('${city}')">
+                <div class="county-header">
+                    <div class="county-badge">一般站</div>
+                    <h3 class="county-name">${city}</h3>
+                    <p class="station-name">${location}</p>
                 </div>
                 
-                <div class="pollutant-item">
-                    <div class="pollutant-label">PM10</div>
-                    <div class="pollutant-value">${station.airquality?.pm10 ?? 'N/A'}</div>
-                    <div class="pollutant-unit">μg/m³</div>
+                <div class="aqi-display">
+                    <div class="aqi-value">${aqi}</div>
+                    <div class="aqi-status">${status}</div>
                 </div>
                 
-                <div class="pollutant-item">
-                    <div class="pollutant-label">O3</div>
-                    <div class="pollutant-value">${station.airquality?.o3 ?? 'N/A'}</div>
-                    <div class="pollutant-unit">ppb</div>
+                <div class="pollutant-grid">
+                    <div class="pollutant-item">
+                        <div class="pollutant-label">PM2.5</div>
+                        <div class="pollutant-value">${pm25}</div>
+                        <div class="pollutant-unit">μg/m³</div>
+                    </div>
+                    
+                    <div class="pollutant-item">
+                        <div class="pollutant-label">PM10</div>
+                        <div class="pollutant-value">${pm10}</div>
+                        <div class="pollutant-unit">μg/m³</div>
+                    </div>
+                    
+                    <div class="pollutant-item">
+                        <div class="pollutant-label">O3</div>
+                        <div class="pollutant-value">${o3}</div>
+                        <div class="pollutant-unit">ppb</div>
+                    </div>
+                    
+                    <div class="pollutant-item">
+                        <div class="pollutant-label">CO</div>
+                        <div class="pollutant-value">${co}</div>
+                        <div class="pollutant-unit">ppm</div>
+                    </div>
                 </div>
                 
-                <div class="pollutant-item">
-                    <div class="pollutant-label">CO</div>
-                    <div class="pollutant-value">${station.airquality?.co ?? 'N/A'}</div>
-                    <div class="pollutant-unit">ppm</div>
+                <div class="update-time">
+                    更新時間：${time}
                 </div>
             </div>
-            
-            <div class="update-time">
-                更新時間：${station.time || 'N/A'}
-            </div>
-        </div>
-    `;
+        `;
+    } catch (error) {
+        console.error('建立卡片時發生錯誤:', error);
+        return '';
+    }
 }
 
 // 跳轉到縣市詳細頁面
 function goToCityPage(county) {
-    // 將縣市名稱作為 URL 參數傳遞給 city.html
     window.location.href = `/city?county=${encodeURIComponent(county)}`;
 }
 
 // 顯示載入中狀態
 function showLoading() {
     const container = document.querySelector('.air_quality_main_data');
-    container.innerHTML = `
-        <div class="loading-container">
-            <div class="loading-spinner"></div>
-            <p>載入中，請稍候...</p>
-        </div>
-    `;
+    if (container) {
+        container.innerHTML = `
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>載入中，請稍候...</p>
+            </div>
+        `;
+    }
 }
 
 // 載入所有縣市資料
 async function loadAllCountiesData() {
+    console.log('開始載入所有縣市資料...');
     showLoading();
     
     const container = document.querySelector('.air_quality_main_data');
-    const title = document.createElement('h2');
-    title.className = 'section-title';
-    title.textContent = '各縣市空氣品質';
-    
-    const cardsContainer = document.createElement('div');
-    cardsContainer.className = 'county-cards-grid';
-    
-    // 並行請求所有縣市的資料
-    const promises = counties.map(county => fetchCountyAirQuality(county));
-    const results = await Promise.all(promises);
-    
-    // 過濾掉無效資料並渲染
-    const validResults = results.filter(result => result !== null);
-    
-    if (validResults.length === 0) {
-        container.innerHTML = `
-            <div class="error-message">
-                <p>⚠️ 目前無法載入空氣品質資料，請稍後再試</p>
-            </div>
-        `;
+    if (!container) {
+        console.error('找不到容器元素');
         return;
     }
     
-    // 將所有縣市卡片渲染到頁面
-    validResults.forEach(countyData => {
-        const cardHTML = createCountyCard(countyData);
-        cardsContainer.innerHTML += cardHTML;
-    });
-    
-    container.innerHTML = '';
-    container.appendChild(title);
-    container.appendChild(cardsContainer);
+    try {
+        // 並行請求所有縣市的資料
+        const promises = counties.map(county => fetchCountyAirQuality(county));
+        const results = await Promise.all(promises);
+        
+        // 過濾掉無效資料並渲染
+        const validResults = results.filter(result => result !== null);
+        
+        console.log(`成功取得 ${validResults.length}/${counties.length} 個縣市的資料`);
+        
+        if (validResults.length === 0) {
+            container.innerHTML = `
+                <div class="error-message">
+                    <p>⚠️ 目前無法載入空氣品質資料，請稍後再試</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // 建立標題
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = '各縣市空氣品質';
+        
+        // 建立卡片容器
+        const cardsContainer = document.createElement('div');
+        cardsContainer.className = 'county-cards-grid';
+        
+        // 將所有縣市卡片渲染到頁面
+        validResults.forEach(countyData => {
+            const cardHTML = createCountyCard(countyData);
+            if (cardHTML) {
+                cardsContainer.innerHTML += cardHTML;
+            }
+        });
+        
+        container.innerHTML = '';
+        container.appendChild(title);
+        container.appendChild(cardsContainer);
+        
+        console.log('所有縣市卡片建立完成！');
+        
+    } catch (error) {
+        console.error('載入資料時發生錯誤:', error);
+        container.innerHTML = `
+            <div class="error-message">
+                <p>⚠️ 載入資料時發生錯誤</p>
+            </div>
+        `;
+    }
 }
 
 // 更新統計數字
 async function updateStatistics() {
     try {
         const response = await fetch('/api/airquality');
+        
+        if (!response.ok) return;
+        
         const data = await response.json();
         
-        if (!data.error && data.length > 0) {
-            // 更新監測站點數量
+        if (!data.error && Array.isArray(data) && data.length > 0) {
             const checkSpotsDiv = document.querySelector('.check_spots div:first-child');
             if (checkSpotsDiv) {
                 checkSpotsDiv.textContent = data.length;
             }
         }
     } catch (error) {
-        console.error('更新統計數字時發生錯誤:', error);
+        console.warn('更新統計數字失敗:', error);
     }
 }
 
 // 頁面載入完成後執行
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('頁面載入完成，開始初始化...');
+    
     // 載入所有縣市資料
     loadAllCountiesData();
     
