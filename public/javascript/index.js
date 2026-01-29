@@ -6,10 +6,10 @@ const counties = [
     '臺東縣', '澎湖縣', '金門縣', '連江縣'
 ];
 
-// 安全取值函數
+// 安全取值
 function safeGet(obj, path, defaultValue = 'N/A') {
     try {
-        const keys = path.split('.');
+        let keys = path.split('.');
         let result = obj;
         for (const key of keys) {
             if (result && typeof result === 'object' && key in result) {
@@ -23,10 +23,22 @@ function safeGet(obj, path, defaultValue = 'N/A') {
         return defaultValue;
     }
 }
+// 針對帶點的屬性的安全取值
+function safeGetPollutant(obj, airqualityKey, defaultValue = 'N/A') {
+    try {
+        if (obj && obj.airquality && airqualityKey in obj.airquality) {
+            const value = obj.airquality[airqualityKey];
+            return value !== null && value !== undefined && value !== '' ? value : defaultValue;
+        }
+        return defaultValue;
+    } catch (error) {
+        return defaultValue;
+    }
+}
 
-// AQI 狀態判斷函數
+// AQI 狀態判斷
 function getAQIStatus(aqi) {
-    const numAqi = parseInt(aqi) || 0;
+    let numAqi = parseInt(aqi) || 0;
     if (numAqi <= 50) return { status: '良好', class: 'good' };
     if (numAqi <= 100) return { status: '普通', class: 'moderate' };
     if (numAqi <= 150) return { status: '對敏感族群不健康', class: 'sensitive' };
@@ -35,7 +47,7 @@ function getAQIStatus(aqi) {
     return { status: '危害', class: 'hazardous' };
 }
 
-// 獲取單一縣市的空氣品質資料
+// get單一縣市的空氣品質資料
 async function fetchCountyAirQuality(county) {
     try {
         const response = await fetch(`/api/airquality?county=${encodeURIComponent(county)}`);
@@ -68,23 +80,23 @@ async function fetchCountyAirQuality(county) {
     }
 }
 
-// 創建縣市卡片 HTML
+// create縣市卡片 HTML
 function createCountyCard(countyData) {
     try {
         if (!countyData || !countyData.station) return '';
         
-        const station = countyData.station;
-        const city = safeGet(station, 'city', countyData.county);
-        const location = safeGet(station, 'location', '未知測站');
-        const aqi = safeGet(station, 'airquality.AQI', '0');
-        const status = safeGet(station, 'airquality.status', '未知');
-        const pm25 = safeGet(station, 'airquality.pm2.5');
-        const pm10 = safeGet(station, 'airquality.pm10');
-        const o3 = safeGet(station, 'airquality.o3');
-        const co = safeGet(station, 'airquality.co');
-        const time = safeGet(station, 'time', '未知時間');
+        let station = countyData.station;
+        let city = safeGet(station, 'city', countyData.county);
+        let location = safeGet(station, 'location', '未知測站');
+        let aqi = safeGet(station, 'airquality.AQI', '0');
+        let status = safeGet(station, 'airquality.status', '未知');
+        let pm25=safeGetPollutant(station, 'pm2.5');
+        let pm10 = safeGet(station, 'airquality.pm10');
+        let o3 = safeGet(station, 'airquality.o3');
+        let co = safeGet(station, 'airquality.co');
+        let time = safeGet(station, 'time', '未知時間');
         
-        const aqiInfo = getAQIStatus(aqi);
+        let aqiInfo = getAQIStatus(aqi);
         
         return `
             <div class="county-card ${aqiInfo.class}" onclick="goToCityPage('${city}')">
@@ -136,14 +148,14 @@ function createCountyCard(countyData) {
     }
 }
 
-// 跳轉到縣市詳細頁面
+// 跳轉到city.html
 function goToCityPage(county) {
     window.location.href = `/city?county=${encodeURIComponent(county)}`;
 }
 
 // 顯示載入中狀態
 function showLoading() {
-    const container = document.querySelector('.air_quality_main_data');
+    let container = document.querySelector('.air_quality_main_data');
     if (container) {
         container.innerHTML = `
             <div class="loading-container">
@@ -159,19 +171,17 @@ async function loadAllCountiesData() {
     console.log('開始載入所有縣市資料...');
     showLoading();
     
-    const container = document.querySelector('.air_quality_main_data');
+    let container = document.querySelector('.air_quality_main_data');
     if (!container) {
         console.error('找不到容器元素');
         return;
     }
     
     try {
-        // 並行請求所有縣市的資料
-        const promises = counties.map(county => fetchCountyAirQuality(county));
-        const results = await Promise.all(promises);
-        
-        // 過濾掉無效資料並渲染
-        const validResults = results.filter(result => result !== null);
+
+        let promises = counties.map(county => fetchCountyAirQuality(county));
+        let results = await Promise.all(promises);
+        let validResults = results.filter(result => result !== null);
         
         console.log(`成功取得 ${validResults.length}/${counties.length} 個縣市的資料`);
         
@@ -184,18 +194,17 @@ async function loadAllCountiesData() {
             return;
         }
         
-        // 建立標題
-        const title = document.createElement('h2');
+        let title = document.createElement('h2');
         title.className = 'section-title';
         title.textContent = '各縣市空氣品質';
         
         // 建立卡片容器
-        const cardsContainer = document.createElement('div');
+        let cardsContainer = document.createElement('div');
         cardsContainer.className = 'county-cards-grid';
         
         // 將所有縣市卡片渲染到頁面
         validResults.forEach(countyData => {
-            const cardHTML = createCountyCard(countyData);
+            let cardHTML = createCountyCard(countyData);
             if (cardHTML) {
                 cardsContainer.innerHTML += cardHTML;
             }
@@ -211,7 +220,7 @@ async function loadAllCountiesData() {
         console.error('載入資料時發生錯誤:', error);
         container.innerHTML = `
             <div class="error-message">
-                <p>⚠️ 載入資料時發生錯誤</p>
+                <p>載入資料時發生錯誤</p>
             </div>
         `;
     }
@@ -220,14 +229,14 @@ async function loadAllCountiesData() {
 // 更新統計數字
 async function updateStatistics() {
     try {
-        const response = await fetch('/api/airquality');
+        let response = await fetch('/api/airquality');
         
         if (!response.ok) return;
         
-        const data = await response.json();
+        let data = await response.json();
         
         if (!data.error && Array.isArray(data) && data.length > 0) {
-            const checkSpotsDiv = document.querySelector('.check_spots div:first-child');
+            let checkSpotsDiv = document.querySelector('.check_spots div:first-child');
             if (checkSpotsDiv) {
                 checkSpotsDiv.textContent = data.length;
             }

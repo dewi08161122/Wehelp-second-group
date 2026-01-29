@@ -95,11 +95,18 @@ main{
 }
 .air_quality_detail{
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 }
+.AQI_info_title{
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c5282;
+    margin-bottom: 1.5rem;
+}
 .check_spots, .pollution_index, .real_time_update{
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg,#FFE6FF 0%, #764ba2 100%);
     color: white;
     padding: 2rem 3rem;
     border-radius: 16px;
@@ -107,6 +114,7 @@ main{
     text-align: center;
     min-width: 150px;
     transition: transform 0.3s ease;
+    margin:1rem;
 }
 .check_spots:hover, .pollution_index:hover, .real_time_update:hover{
     transform: translateY(-5px);
@@ -468,5 +476,13 @@ footer{
 
     .link a{
         font-size: 0.9rem;
+    }
+    .air_quality_title, .AQI_info_title, .section-title{
+        font-size: 1.5rem;
+    }
+}
+@media (max-width: 410px){
+    .check_spots, .pollution_index, .real_time_update {
+        width:70%;
     }
 }
