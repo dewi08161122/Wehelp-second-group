@@ -1,14 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>空氣品質</title>
-	<!-- 首頁 -->
+	<title>Air Taiwan 台灣空氣品質監測網</title>
+	<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-	<!-- 整體空氣品質 -->
+<div class="container">
+	<!--nav bar area-->
+	 <nav>
+<div class="nav_box">
+	<div class="logo">
+		<div class="logo_pic">
+			<img src="/img/logo.png" alt="air taiwan logo">
+		</div>
+		<div class="website_info">
+			<div class="website_name">AIR TAIWAN</div>
+			<div class="website_description">Real-time Monitor</div>
+		</div>
+	</div>
+	<div class="link">
+		<div><a href="#">首頁</a></div>
+		<div><a href="https://www.moenv.gov.tw/">環境部全球資訊網</a></div>
+	</div>
+</div>
+	 </nav>
+
+
+	 <!--main content-->
+	 <main>
+<div class="air_quality_info">
+	<div class="air_quality_title">台灣即時空氣品質監測
+</div>
+	<div class="air_quality_sub_title">掌握全台空氣品質，守護您的健康</div>
+	<div class="air_quality_detail">
+		<div class="check_spots">
+			<div>85</div>
+			<div>監測站點</div>
+		</div>
+		<div class="pollution_index">
+			<div>6</div>
+			<div>污染指標</div>
+		</div>
+		<div class="real_time_update">
+			<div>24/7</div>
+			<div>即時更新</div>
+		</div>
+	</div>
+
+
+
+
+</div>
+<div class="AQI_info">
+	<div class="AQI_info_title">空氣品質指標 (AQI) 說明</div>
+	<div class="AQI_levels">
+		<div class="AQI_level good">
+			<div>0-50</div>
+			<div>良好</div>
+		</div>
+		<div class="AQI_level soso">
+			<div>51-100</div>
+			<div>普通</div>
+		</div>
+		<div class="AQI_level notgood">
+			<div>101-150</div>
+			<div>對敏感族群不健康</div>
+		</div>
+		<div class="AQI_level bad">
+			<div>151-200</div>
+			<div>對所有族群不健康</div>
+		</div>
+		<div class="AQI_level verybad">
+			<div>201-300</div>
+			<div>非常不健康</div>
+		</div>
+		<div class="AQI_level damage">
+			<div>301+</div>
+			<div>危害</div>
+		</div>
+	</div>
+</div>
+<div class="air_quality_main_data">
+	<!--渲染所有縣市的測站資料-->
+</div>
+	 </main>
+
+	 <!--footer area-->
+	 <footer>
+		<div class="source">資料來源：環境部空氣品質監測網</div>
+		<div class="copyright">© AIR TAIWAN 2026. All Rights Reserved.</div>
+
+	 </footer>
+</div>
+	<script src="/js/index.js"></script>
 
 </body>
 </html>
